@@ -19,8 +19,8 @@ export async function loginSimples(email: string, senha: string) {
     throw new Error('Usuário não encontrado')
   }
   
-  // Verificação simples (em produção use bcrypt)
-  if (usuarios.senha_hash !== senha) {
+  // Verificação simples
+  if (usuarios.senha !== senha) {
     throw new Error('Senha incorreta')
   }
   
