@@ -1,114 +1,87 @@
 // src/services/api.ts
-// API que usa Edge Functions da Vercel
+// API usando Supabase diretamente (sem backend)
 
-const API_BASE = import.meta.env.VITE_API_URL || '/api';
+import { supabase } from './supabase'
 
-export type ApiError = { message: string; code?: string };
+export type ApiError = { message: string; code?: string }
 
-// Helper para headers
-const getHeaders = () => {
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-  };
-  
-  const token = localStorage.getItem('token');
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-  
-  return headers;
-};
+// Helper para headers com auth
+const getAuth = () => {
+  const token = localStorage.getItem('token')
+  return token
+}
 
 export const api = {
   // GET
-  async get<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
-    const qs = params ? '?' + new URLSearchParams(params as any).toString() : '';
-    const res = await fetch(`${API_BASE}/${endpoint}${qs}`, {
-      headers: getHeaders(),
-    });
+  async get<T>(table: string, params?: Record<string, any>): Promise<T[]> {
+    let query = supabase.from(table).select('*')
     
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || `Erro HTTP ${res.status}`);
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          query = query.eq(key, value)
+        }
+      })
     }
-    return res.json();
+    
+    const { data, error } = await query
+    
+    if (error) throw new Error(error.message)
+    return data || []
   },
 
   // POST
-  async post<T>(endpoint: string, data: any): Promise<T> {
-    const res = await fetch(`${API_BASE}/${endpoint}`, {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify(data),
-    });
+  async post<T>(table: string, data: any): Promise<T> {
+    const { data: result, error } = await supabase
+      .from(table)
+      .insert(data)
+      .select()
+      .single()
     
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || `Erro ao criar ${endpoint}`);
-    }
-    return res.json();
+    if (error) throw new Error(error.message)
+    return result
   },
 
   // PUT
-  async put<T>(endpoint: string, id: string | number, data: any): Promise<T> {
-    const res = await fetch(`${API_BASE}/${endpoint}/${id}`, {
-      method: 'PUT',
-      headers: getHeaders(),
-      body: JSON.stringify(data),
-    });
+  async put<T>(table: string, id: string | number, data: any): Promise<T> {
+    const { data: result, error } = await supabase
+      .from(table)
+      .update(data)
+      .eq('id', id)
+      .select()
+      .single()
     
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || `Erro ao atualizar ${endpoint}`);
-    }
-    return res.json();
+    if (error) throw new Error(error.message)
+    return result
   },
 
   // DELETE
-  async delete(endpoint: string, id?: string | number): Promise<void> {
-    const url = id ? `${API_BASE}/${endpoint}/${id}` : `${API_BASE}/${endpoint}`;
-    const res = await fetch(url, {
-      method: 'DELETE',
-      headers: getHeaders(),
-    });
+  async delete(table: string, id: string | number): Promise<void> {
+    const { error } = await supabase
+      .from(table)
+      .delete()
+      .eq('id', id)
     
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || `Erro ao deletar ${endpoint}`);
-    }
+    if (error) throw new Error(error.message)
   },
 
   // Autenticação
   auth: {
     async signIn(email: string, password: string) {
-      const res = await fetch(`${API_BASE}/usuarios/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, senha: password }),
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || 'Usuário ou senha inválidos');
-      }
-
-      const data = await res.json();
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('auth_user', JSON.stringify(data.user));
-      return data;
+      const { loginSimples } = await import('./supabase')
+      return loginSimples(email, password)
     },
 
     async signOut() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('auth_user');
+      const { logout } = await import('./supabase')
+      return logout()
     },
 
     async getSession() {
-      const token = localStorage.getItem('token');
-      const user = localStorage.getItem('auth_user');
-      return token && user ? { user: JSON.parse(user), token } : null;
-    },
-  },
-};
+      const { getSession } = await import('./supabase')
+      return getSession()
+    }
+  }
+}
 
-export default api;
+export default api
