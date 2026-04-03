@@ -60,6 +60,7 @@ export default function Laminacao() {
     const mesStr = String(mes).padStart(2, '0');
     
     console.log('Buscando registros para:', ano, mesStr);
+    console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
     
     // Buscar registros
     const { data: regs, error: regError } = await supabase
@@ -70,6 +71,10 @@ export default function Laminacao() {
       .order('data');
     
     console.log('Registros encontrados:', regs, 'Erro:', regError);
+    
+    if (regError) {
+      console.error('Erro detalhado:', JSON.stringify(regError, null, 2));
+    }
     
     // Buscar produção para cada registro
     const registrosComProducao = await Promise.all((regs || []).map(async (r) => {
