@@ -59,12 +59,22 @@ export default function Laminacao() {
     setLoading(true);
     const mesStr = String(mes).padStart(2, '0');
     
+    // Buscar registros
     const { data: regs } = await supabase
       .from('laminacao_registros')
-      .select('*, producao:laminacao_producao(*)')
+      .select('*')
       .gte('data', `${ano}-${mesStr}-01`)
       .lte('data', `${ano}-${mesStr}-31`)
       .order('data');
+    
+    // Buscar produção para cada registro
+    const registrosComProducao = await Promise.all((regs || []).map(async (r) => {
+      const { data: prod } = await supabase
+        .from('laminacao_producao')
+        .select('*')
+        .eq('registro_id', r.id);
+      return { ...r, producao: prod || [] };
+    }));
     
     const { data: maqs } = await supabase
       .from('laminacao_maquinas_config')
@@ -72,7 +82,7 @@ export default function Laminacao() {
       .eq('ativo', true)
       .order('ordem');
     
-    setRegistros(regs || []);
+    setRegistros(registrosComProducao);
     setMaquinas(maqs || []);
     setLoading(false);
   }
