@@ -150,17 +150,22 @@ export default function Laminacao() {
       const producaoData = prodRows
         .filter(r => r.maquina && parseFloat(r.valor) > 0)
         .map(r => ({ turno: r.turno, maquina: r.maquina, valor: parseFloat(r.valor) }));
+      
+      console.log('Dados a salvar:', { formData, formObs, producaoData });
 
       if (editId) {
         await supabase.from('laminacao_registros').update({ data: formData, observacoes: formObs }).eq('id', editId);
         await supabase.from('laminacao_producao').delete().eq('registro_id', editId);
         if (producaoData.length) {
-          await supabase.from('laminacao_producao').insert(producaoData.map(p => ({ ...p, registro_id: editId })));
+          const { error } = await supabase.from('laminacao_producao').insert(producaoData.map(p => ({ ...p, registro_id: editId })));
+          if (error) console.error('Erro ao inserir produção (edit):', error);
         }
       } else {
-        const { data: reg } = await supabase.from('laminacao_registros').insert({ data: formData, observacoes: formObs }).select().single();
+        const { data: reg, error: regError } = await supabase.from('laminacao_registros').insert({ data: formData, observacoes: formObs }).select().single();
+        console.log('Registro criado:', reg, 'Erro:', regError);
         if (producaoData.length && reg) {
-          await supabase.from('laminacao_producao').insert(producaoData.map(p => ({ ...p, registro_id: reg.id })));
+          const { error } = await supabase.from('laminacao_producao').insert(producaoData.map(p => ({ ...p, registro_id: reg.id })));
+          console.log('Produção inserida:', producaoData, 'Erro:', error);
         }
       }
       setModal(false);
