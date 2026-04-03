@@ -59,15 +59,17 @@ export default function Laminacao() {
     setLoading(true);
     const mesStr = String(mes).padStart(2, '0');
     
-    console.log('Buscando registros para:', ano, mesStr);
-    console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
+    // Último dia do mês correto
+    const ultimoDia = new Date(ano, mes, 0).getDate();
+    
+    console.log('Buscando registros para:', ano, mesStr, 'até dia', ultimoDia);
     
     // Buscar registros
     const { data: regs, error: regError } = await supabase
       .from('laminacao_registros')
       .select('*')
       .gte('data', `${ano}-${mesStr}-01`)
-      .lte('data', `${ano}-${mesStr}-31`)
+      .lte('data', `${ano}-${mesStr}-${ultimoDia}`)
       .order('data');
     
     console.log('Registros encontrados:', regs, 'Erro:', regError);
@@ -82,11 +84,8 @@ export default function Laminacao() {
         .from('laminacao_producao')
         .select('*')
         .eq('registro_id', r.id);
-      console.log(`Produção para registro ${r.id}:`, prod, 'Erro:', prodError);
       return { ...r, producao: prod || [] };
     }));
-    
-    console.log('Registros finais:', registrosComProducao);
     
     const { data: maqs } = await supabase
       .from('laminacao_maquinas_config')
