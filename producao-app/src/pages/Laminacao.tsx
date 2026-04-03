@@ -80,12 +80,16 @@ export default function Laminacao() {
     
     // Buscar produção para cada registro
     const registrosComProducao = await Promise.all((regs || []).map(async (r) => {
+      console.log('Buscando produção para registro:', r.id);
       const { data: prod, error: prodError } = await supabase
         .from('laminacao_producao')
         .select('*')
         .eq('registro_id', r.id);
+      console.log('Produção encontrada:', prod, 'Erro:', prodError);
       return { ...r, producao: prod || [] };
     }));
+    
+    console.log('Registros com produção:', registrosComProducao);
     
     const { data: maqs } = await supabase
       .from('laminacao_maquinas_config')
