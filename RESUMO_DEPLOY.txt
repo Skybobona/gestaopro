@@ -1,0 +1,107 @@
+﻿â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                    GESTÃƒOPRO - DEPLOY                            â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+
+Ã°Å¸â€œÅ¸ ARQUITETURA
+================
+
+    [UsuÃƒÂ¡rio]
+        Ã¢â€ â€œ
+    [Vercel] Ã¢â€ ï¿½Ã¢â€ â€™ Frontend (React + Vite)
+        Ã¢â€ â€œ HTTPS
+    [Railway] Ã¢â€ ï¿½Ã¢â€ â€™ Backend (Express + Node)
+        Ã¢â€ â€œ PostgreSQL
+    [Supabase] Ã¢â€ ï¿½Ã¢â€ â€™ Banco de Dados
+
+Ã°Å¸Å¡â‚¬ ETAPAS DO DEPLOY
+=====================
+
+1Ã¯Â¸ï¿½Ã¢Æ’Â£ SUPABASE (Banco de Dados)
+   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ Acesse: https://app.supabase.com
+   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ Projeto: SEU_PROJETO_ID
+   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ SQL Editor Ã¢â€ â€™ Execute schema.sql
+   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ Ã¢Å“â€¦ Status: JÃƒÂ¡ configurado!
+
+2Ã¯Â¸ï¿½Ã¢Æ’Â£ RAILWAY (Backend)
+   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ Acesse: https://railway.app
+   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ New Project Ã¢â€ â€™ Deploy from GitHub
+   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ Adicione as variÃƒÂ¡veis de ambiente:
+   Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ SUPABASE_URL=https://SEU_PROJETO_ID.supabase.co
+   Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ SUPABASE_SERVICE_KEY=sb_secret_...
+   Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ PORT=3001
+   Ã¢â€â€š   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ JWT_SECRET=...
+   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ Deploy!
+
+3Ã¯Â¸ï¿½Ã¢Æ’Â£ VERCEL (Frontend)
+   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ Acesse: https://vercel.com
+   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ Add New Project Ã¢â€ â€™ Import GitHub
+   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ Configure:
+   Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ Framework: Vite
+   Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ Build: npm run build
+   Ã¢â€â€š   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ Output: dist
+   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ VariÃƒÂ¡vel de ambiente:
+   Ã¢â€â€š   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ VITE_API_URL=https://[seu-app].up.railway.app/api
+   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ Deploy!
+
+Ã°Å¸â€â€˜ CREDENCIAIS
+===============
+
+Supabase URL:      https://SEU_PROJETO_ID.supabase.co
+Supabase Service:  SUA_SERVICE_KEY
+Supabase Anon:     SUA_ANON_KEY
+
+Ã°Å¸â€œï¿½ ARQUIVOS IMPORTANTES
+=========================
+
+Ã¢Å“â€¦ JÃƒÂ¡ existem:
+   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ producao-app/vercel.json
+   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ producao-app/backend/railway.json
+   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ producao-app/backend/Procfile
+   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ supabase/schema.sql
+
+Ã¢Å¡ Ã¯Â¸ï¿½ Criar na hora do deploy:
+   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ producao-app/backend/.env (local apenas)
+   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ producao-app/.env.production
+
+Ã°Å¸Â§Âª TESTES APÃƒâ€œS DEPLOY
+========================
+
+1. Health Check:
+   curl https://[seu-app].up.railway.app/api/health
+
+2. Login:
+   POST /api/usuarios/login
+   { "email": "admin@gestaopro.com", "senha": "..." }
+
+3. Listar OS:
+   GET /api/producao/os
+   Header: Authorization: Bearer [token]
+
+Ã°Å¸Å¡Â¨ TROUBLESHOOTING
+====================
+
+Ã¢ï¿½Å’ CORS Error:
+   Ã¢â€ â€™ Adicione a URL do Vercel no array ALLOWED do backend
+
+Ã¢ï¿½Å’ Database Connection:
+   Ã¢â€ â€™ Verifique se usou SERVICE_KEY (nÃƒÂ£o ANON_KEY)
+
+Ã¢ï¿½Å’ Build Fail:
+   Ã¢â€ â€™ Execute "npm run build" localmente para testar
+
+Ã¢ï¿½Å’ 404 Not Found:
+   Ã¢â€ â€™ Verifique se vercel.json tem as rewrites corretas
+
+Ã°Å¸â€œÅ¾ LINKS ÃƒÅ¡TEIS
+================
+
+Ã¢â‚¬Â¢ Railway Dashboard: https://railway.app/dashboard
+Ã¢â‚¬Â¢ Vercel Dashboard:  https://vercel.com/dashboard
+Ã¢â‚¬Â¢ Supabase Project:  https://app.supabase.com/project/SEU_PROJETO_ID
+Ã¢â‚¬Â¢ Guia Completo:     ./GUIA_DEPLOY_COMPLETO.md
+
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+
+Ã°Å¸Å½â€° BOA SORTE NO DEPLOY! Ã°Å¸Å½â€°
+
+Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
