@@ -148,10 +148,11 @@ export default function Laminacao() {
     setSaving(true); setError('');
     try {
       const producaoData = prodRows
-        .filter(r => r.maquina && parseFloat(r.valor) > 0)
+        .filter(r => r.maquina && r.valor && parseFloat(r.valor) > 0)
         .map(r => ({ turno: r.turno, maquina: r.maquina, valor: parseFloat(r.valor) }));
       
-      console.log('Dados a salvar:', { formData, formObs, producaoData });
+      console.log('prodRows:', prodRows);
+      console.log('producaoData filtrado:', producaoData);
 
       if (editId) {
         await supabase.from('laminacao_registros').update({ data: formData, observacoes: formObs }).eq('id', editId);
@@ -161,14 +162,31 @@ export default function Laminacao() {
           if (error) console.error('Erro ao inserir produção (edit):', error);
         }
       } else {
-        const { data: reg, error: regError } = await supabase.from('laminacao_registros').insert({ data: formData, observacoes: formObs }).select().single();
-        console.log('Registro criado:', reg, 'Erro:', regError);
-        if (regError) {
-          console.error('ERRO DETALHADO AO CRIAR REGISTRO:', JSON.stringify(regError, null, 2));
-          throw new Error('Erro ao criar registro: ' + regError.message);
+        // Verificar se já existe registro para esta data
+        const { data: existing } = await supabase
+          .from('laminacao_registros')
+          .select('id')
+          .eq('data', formData)
+          .single();
+        
+        let regId;
+        if (existing) {
+          // Atualizar registro existente
+          await supabase.from('laminacao_registros').update({ observacoes: formObs }).eq('id', existing.id);
+          regId = existing.id;
+          console.log('Registro atualizado:', existing.id);
+        } else {
+          // Criar novo registro
+          const { data: reg, error: regError } = await supabase.from('laminacao_registros').insert({ data: formData, observacoes: formObs }).select().single();
+          if (regError) throw regError;
+          regId = reg.id;
+          console.log('Registro criado:', reg.id);
         }
-        if (producaoData.length && reg) {
-          const { error } = await supabase.from('laminacao_producao').insert(producaoData.map(p => ({ ...p, registro_id: reg.id })));
+        
+        if (producaoData.length && regId) {
+          // Deletar produção antiga e inserir nova
+          await supabase.from('laminacao_producao').delete().eq('registro_id', regId);
+          const { error } = await supabase.from('laminacao_producao').insert(producaoData.map(p => ({ ...p, registro_id: regId })));
           console.log('Produção inserida:', producaoData, 'Erro:', error);
         }
       }
