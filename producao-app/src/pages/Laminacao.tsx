@@ -377,15 +377,15 @@ export default function Laminacao() {
                             </td>
                             <td className="px-3 py-2 text-right font-mono tabular-nums">{fmt(p.valor, 0)}</td>
                             {i === 0 && (
-                              <>
-                                <td rowSpan={prod.length || 1} className="px-3 py-2 text-slate-500 align-top">{reg.observacoes}</td>
-                                <td rowSpan={prod.length || 1} className="px-2 py-2 align-top">
-                                  <div className="flex gap-1">
-                                    <button onClick={() => openEditar(reg)} className="p-1 text-slate-300 hover:text-indigo-600"><Edit2 className="w-3.5 h-3.5" /></button>
-                                    <button onClick={() => excluir(reg.id)} className="p-1 text-slate-300 hover:text-red-500"><Trash2 className="w-3.5 h-3.5" /></button>
-                                  </div>
-                                </td>
-                              </>
+                              <td rowSpan={prod.length || 1} className="px-3 py-2 text-slate-500 align-top">{reg.observacoes}</td>
+                            )}
+                            {i === 0 && (
+                              <td rowSpan={prod.length || 1} className="px-2 py-2 align-top">
+                                <div className="flex gap-1">
+                                  <button onClick={() => openEditar(reg)} className="p-1 text-slate-300 hover:text-indigo-600"><Edit2 className="w-3.5 h-3.5" /></button>
+                                  <button onClick={() => excluir(reg.id)} className="p-1 text-slate-300 hover:text-red-500"><Trash2 className="w-3.5 h-3.5" /></button>
+                                </div>
+                              </td>
                             )}
                           </tr>
                         ))}
