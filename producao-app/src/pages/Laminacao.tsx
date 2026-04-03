@@ -163,6 +163,10 @@ export default function Laminacao() {
       } else {
         const { data: reg, error: regError } = await supabase.from('laminacao_registros').insert({ data: formData, observacoes: formObs }).select().single();
         console.log('Registro criado:', reg, 'Erro:', regError);
+        if (regError) {
+          console.error('ERRO DETALHADO AO CRIAR REGISTRO:', JSON.stringify(regError, null, 2));
+          throw new Error('Erro ao criar registro: ' + regError.message);
+        }
         if (producaoData.length && reg) {
           const { error } = await supabase.from('laminacao_producao').insert(producaoData.map(p => ({ ...p, registro_id: reg.id })));
           console.log('Produção inserida:', producaoData, 'Erro:', error);
