@@ -1,0 +1,8 @@
+{
+  "framework": "vite",
+  "buildCommand": "cd producao-app && npm install && npm run build",
+  "outputDirectory": "producao-app/dist",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
