@@ -59,22 +59,29 @@ export default function Laminacao() {
     setLoading(true);
     const mesStr = String(mes).padStart(2, '0');
     
+    console.log('Buscando registros para:', ano, mesStr);
+    
     // Buscar registros
-    const { data: regs } = await supabase
+    const { data: regs, error: regError } = await supabase
       .from('laminacao_registros')
       .select('*')
       .gte('data', `${ano}-${mesStr}-01`)
       .lte('data', `${ano}-${mesStr}-31`)
       .order('data');
     
+    console.log('Registros encontrados:', regs, 'Erro:', regError);
+    
     // Buscar produção para cada registro
     const registrosComProducao = await Promise.all((regs || []).map(async (r) => {
-      const { data: prod } = await supabase
+      const { data: prod, error: prodError } = await supabase
         .from('laminacao_producao')
         .select('*')
         .eq('registro_id', r.id);
+      console.log(`Produção para registro ${r.id}:`, prod, 'Erro:', prodError);
       return { ...r, producao: prod || [] };
     }));
+    
+    console.log('Registros finais:', registrosComProducao);
     
     const { data: maqs } = await supabase
       .from('laminacao_maquinas_config')
