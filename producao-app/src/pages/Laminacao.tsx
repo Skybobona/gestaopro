@@ -106,13 +106,17 @@ export default function Laminacao() {
     console.log('Registro existente:', existing, 'Erro select:', selectError);
 
     if (existing) {
-      console.log('Fazendo UPDATE no ID:', existing.id, 'campo:', campo, 'valor:', numValor);
+      alert(`Fazendo UPDATE: ID=${existing.id}, Campo=${campo}, Valor=${numValor}`);
       const { data: updated, error } = await supabase
         .from('laminacao_lancamentos')
         .update({ [campo]: numValor })
         .eq('id', existing.id)
         .select();
-      console.log('Update resultado:', updated, 'Erro:', error);
+      if (error) {
+        alert('ERRO: ' + JSON.stringify(error));
+      } else {
+        alert('SUCESSO: ' + JSON.stringify(updated));
+      }
     } else {
       console.log('Fazendo INSERT');
       const { data: inserted, error } = await supabase
