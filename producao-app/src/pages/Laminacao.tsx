@@ -125,7 +125,11 @@ export default function Laminacao() {
     // Recarregar
     console.log('Recarregando dados...');
     await load();
+    console.log('Dados recarregados:', dados);
     setSalvando(null);
+    
+    // Forçar refresh da página para garantir que os dados apareçam
+    window.location.reload();
   }
 
   function handleKeyDown(e: React.KeyboardEvent, data: string, campo: string) {
