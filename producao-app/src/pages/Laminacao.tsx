@@ -29,6 +29,10 @@ export default function Laminacao() {
   const [salvando, setSalvando] = useState<string | null>(null);
 
   useEffect(() => { load(); }, [ano, mes]);
+  
+  useEffect(() => {
+    console.log('Estado dados mudou:', dados);
+  }, [dados]);
 
   async function load() {
     setLoading(true);
