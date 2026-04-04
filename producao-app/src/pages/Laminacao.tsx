@@ -33,12 +33,20 @@ export default function Laminacao() {
   async function load() {
     setLoading(true);
     const mesStr = String(mes).padStart(2, '0');
-    const { data: rows } = await supabase
+    console.log('Buscando dados para:', ano, mesStr);
+    
+    const { data: rows, error } = await supabase
       .from('laminacao_lancamentos')
       .select('*')
       .gte('data', `${ano}-${mesStr}-01`)
       .lte('data', `${ano}-${mesStr}-31`)
       .order('data');
+    
+    if (error) {
+      console.error('ERRO ao buscar dados:', error);
+    }
+    
+    console.log('Resposta do Supabase:', { rows, error });
     
     const map: Record<string, any> = {};
     (rows || []).forEach(r => { map[r.data] = r; });
