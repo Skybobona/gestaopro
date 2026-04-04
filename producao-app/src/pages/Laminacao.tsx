@@ -96,34 +96,30 @@ export default function Laminacao() {
       return;
     }
     
-    // UPSERT: inserir ou atualizar
-    const { data: existing, error: selectError } = await supabase
+    // UPSERT: tentar update primeiro, se não existir faz insert
+    const { data: existing } = await supabase
       .from('laminacao_lancamentos')
       .select('id')
-      .eq('data', data)
-      .single();
+      .eq('data', data);
     
-    console.log('Registro existente:', existing, 'Erro select:', selectError);
+    console.log('Registros encontrados:', existing);
 
-    if (existing) {
-      alert(`Fazendo UPDATE: ID=${existing.id}, Campo=${campo}, Valor=${numValor}`);
-      const { data: updated, error } = await supabase
+    if (existing && existing.length > 0) {
+      const id = existing[0].id;
+      console.log('Fazendo UPDATE no ID:', id);
+      const { error } = await supabase
         .from('laminacao_lancamentos')
         .update({ [campo]: numValor })
-        .eq('id', existing.id)
-        .select();
-      if (error) {
-        alert('ERRO: ' + JSON.stringify(error));
-      } else {
-        alert('SUCESSO: ' + JSON.stringify(updated));
-      }
+        .eq('id', id);
+      if (error) console.error('Erro update:', error);
+      else console.log('Update OK');
     } else {
       console.log('Fazendo INSERT');
-      const { data: inserted, error } = await supabase
+      const { error } = await supabase
         .from('laminacao_lancamentos')
-        .insert({ data, [campo]: numValor })
-        .select();
-      console.log('Insert resultado:', inserted, 'Erro:', error);
+        .insert({ data, [campo]: numValor });
+      if (error) console.error('Erro insert:', error);
+      else console.log('Insert OK');
     }
 
     // Recarregar
