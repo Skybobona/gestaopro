@@ -42,8 +42,11 @@ export default function Laminacao() {
     
     const map: Record<string, any> = {};
     (rows || []).forEach(r => { map[r.data] = r; });
+    console.log('Dados carregados do Supabase:', rows);
+    console.log('Mapa criado:', map);
     setDados(map);
     setLoading(false);
+    return map; // Retornar para uso após salvar
   }
 
   // Gerar dias do mês
@@ -124,8 +127,8 @@ export default function Laminacao() {
 
     // Recarregar
     console.log('Recarregando dados...');
-    await load();
-    console.log('Dados após load:', dados);
+    const novosDados = await load();
+    console.log('Novos dados carregados:', novosDados);
     setSalvando(null);
   }
 
