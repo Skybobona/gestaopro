@@ -74,14 +74,27 @@ export default function Laminacao() {
   async function salvarCelula(data: string, campo: string) {
     const key = `${data}-${campo}`;
     const valor = editando[key];
-    if (valor === undefined) return;
+    if (valor === undefined) {
+      console.log('Valor undefined, cancelando');
+      return;
+    }
     
-    console.log('Salvando:', { data, campo, valor });
+    console.log('Salvando:', { data, campo, valor, key });
     setSalvando(key);
-    delete editando[key];
-    setEditando({ ...editando });
+    
+    // Remover do estado de edição
+    const novoEditando = { ...editando };
+    delete novoEditando[key];
+    setEditando(novoEditando);
 
-    const numValor = parseFloat(valor) || 0;
+    const numValor = parseFloat(valor);
+    console.log('Valor numérico:', numValor);
+    
+    if (isNaN(numValor)) {
+      console.log('Valor inválido, cancelando');
+      setSalvando(null);
+      return;
+    }
     
     // UPSERT: inserir ou atualizar
     const { data: existing, error: selectError } = await supabase
@@ -90,17 +103,27 @@ export default function Laminacao() {
       .eq('data', data)
       .single();
     
-    console.log('Registro existente:', existing, 'Erro:', selectError);
+    console.log('Registro existente:', existing, 'Erro select:', selectError);
 
     if (existing) {
-      const { error } = await supabase.from('laminacao_lancamentos').update({ [campo]: numValor }).eq('id', existing.id);
-      console.log('Update resultado:', error);
+      console.log('Fazendo UPDATE no ID:', existing.id, 'campo:', campo, 'valor:', numValor);
+      const { data: updated, error } = await supabase
+        .from('laminacao_lancamentos')
+        .update({ [campo]: numValor })
+        .eq('id', existing.id)
+        .select();
+      console.log('Update resultado:', updated, 'Erro:', error);
     } else {
-      const { data: inserted, error } = await supabase.from('laminacao_lancamentos').insert({ data, [campo]: numValor }).select();
+      console.log('Fazendo INSERT');
+      const { data: inserted, error } = await supabase
+        .from('laminacao_lancamentos')
+        .insert({ data, [campo]: numValor })
+        .select();
       console.log('Insert resultado:', inserted, 'Erro:', error);
     }
 
     // Recarregar
+    console.log('Recarregando dados...');
     await load();
     setSalvando(null);
   }
