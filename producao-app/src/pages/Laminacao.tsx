@@ -76,6 +76,7 @@ export default function Laminacao() {
     const valor = editando[key];
     if (valor === undefined) return;
     
+    console.log('Salvando:', { data, campo, valor });
     setSalvando(key);
     delete editando[key];
     setEditando({ ...editando });
@@ -83,16 +84,20 @@ export default function Laminacao() {
     const numValor = parseFloat(valor) || 0;
     
     // UPSERT: inserir ou atualizar
-    const { data: existing } = await supabase
+    const { data: existing, error: selectError } = await supabase
       .from('laminacao_lancamentos')
       .select('id')
       .eq('data', data)
       .single();
+    
+    console.log('Registro existente:', existing, 'Erro:', selectError);
 
     if (existing) {
-      await supabase.from('laminacao_lancamentos').update({ [campo]: numValor }).eq('id', existing.id);
+      const { error } = await supabase.from('laminacao_lancamentos').update({ [campo]: numValor }).eq('id', existing.id);
+      console.log('Update resultado:', error);
     } else {
-      await supabase.from('laminacao_lancamentos').insert({ data, [campo]: numValor });
+      const { data: inserted, error } = await supabase.from('laminacao_lancamentos').insert({ data, [campo]: numValor }).select();
+      console.log('Insert resultado:', inserted, 'Erro:', error);
     }
 
     // Recarregar
