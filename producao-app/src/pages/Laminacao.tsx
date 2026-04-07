@@ -25,13 +25,14 @@ export default function Laminação() {
   async function load() {
     setLoading(true);
     const mesStr = String(mes).padStart(2, '0');
-    console.log('Buscando dados para:', ano, mesStr);
+    const ultimoDia = new Date(ano, mes, 0).getDate(); // Último dia do mês correto
+    console.log('Buscando dados para:', ano, mesStr, 'até dia', ultimoDia);
     
     const { data, error } = await supabase
       .from('laminacao_lancamentos')
       .select('*')
       .gte('data', `${ano}-${mesStr}-01`)
-      .lte('data', `${ano}-${mesStr}-31`)
+      .lte('data', `${ano}-${mesStr}-${ultimoDia}`)
       .order('data', { ascending: false });
     
     console.log('Dados retornados:', data, 'Erro:', error);
