@@ -31,13 +31,22 @@ export default function Laminacao() {
   async function salvar(e) {
     e.preventDefault();
     
-    await supabase.from('laminacao_lancamentos').insert({
+    console.log('Tentando salvar:', { data, t1m1, t1m2, t1m3, obs });
+    
+    const { data: resultado, error } = await supabase.from('laminacao_lancamentos').insert({
       data: data,
       t1_maquina1_kg: parseFloat(t1m1) || 0,
       t1_maquina2_kg: parseFloat(t1m2) || 0,
       t1_maquina3_kg: parseFloat(t1m3) || 0,
       observacoes: obs
     });
+    
+    console.log('Resultado:', resultado, 'Erro:', error);
+    
+    if (error) {
+      alert('Erro ao salvar: ' + error.message);
+      return;
+    }
     
     // Limpar formulário
     setData('');
