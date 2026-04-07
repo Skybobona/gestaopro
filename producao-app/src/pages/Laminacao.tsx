@@ -25,12 +25,16 @@ export default function Laminação() {
   async function load() {
     setLoading(true);
     const mesStr = String(mes).padStart(2, '0');
-    const { data } = await supabase
+    console.log('Buscando dados para:', ano, mesStr);
+    
+    const { data, error } = await supabase
       .from('laminacao_lancamentos')
       .select('*')
       .gte('data', `${ano}-${mesStr}-01`)
       .lte('data', `${ano}-${mesStr}-31`)
       .order('data', { ascending: false });
+    
+    console.log('Dados retornados:', data, 'Erro:', error);
     setRegistros(data || []);
     setLoading(false);
   }
