@@ -35,6 +35,9 @@ export default function Laminação() {
       .order('data', { ascending: false });
     
     console.log('Dados retornados:', data, 'Erro:', error);
+    if (error) {
+      console.error('ERRO COMPLETO:', JSON.stringify(error, null, 2));
+    }
     setRegistros(data || []);
     setLoading(false);
   }
